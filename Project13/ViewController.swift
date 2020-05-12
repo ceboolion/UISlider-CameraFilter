@@ -19,6 +19,7 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    title = "InstaFilter"
     navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importPicture))
     context = CIContext()
     currentFilter = CIFilter(name: "CISepiaTone")
@@ -54,6 +55,8 @@ class ViewController: UIViewController {
   }
   
   @IBAction func save(_ sender: Any) {
+    guard let image = imageView.image else {return}
+    UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
   }
   
   @IBAction func intensityChanged(_ sender: Any) {
@@ -84,4 +87,14 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
       self.imageView.image = processedImage
     }
   }
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer){
+        if let error = error {
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default ))
+        } else {
+            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default ))
+            present(ac, animated: true)
+        }
+    }
 }
