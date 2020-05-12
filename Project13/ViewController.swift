@@ -7,16 +7,21 @@
 //
 
 import UIKit
+import CoreImage
 
 class ViewController: UIViewController {
   @IBOutlet var imageView: UIImageView!
   @IBOutlet var intensity: UISlider!
   
   var currentImage: UIImage!
+  var context: CIContext!
+  var currentFilter: CIFilter!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importPicture))
+    context = CIContext()
+    currentFilter = CIFilter(name: "CISepiaTone")
   }
   
   @objc func importPicture(){
